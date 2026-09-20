@@ -1,0 +1,68 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Profil Mahasiswa'),
+        ),
+        body: const Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.school,
+                size: 72,
+              ),
+
+              SizedBox(height: 16),
+
+              Text(
+                'Andy Otani',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              SizedBox(height: 8),
+
+              Text(
+                'NIM: 244107020241',
+                style: TextStyle(fontSize: 16),
+              ),
+
+              Text(
+                'Kelas: TI-3C',
+                style: TextStyle(fontSize: 16),
+              ),
+
+              Text(
+                'Program Studi: Teknik Informatika',
+                style: TextStyle(fontSize: 16),
+              ),
+
+              SizedBox(height: 8),
+
+              Text(
+                'Pemrograman Mobile — Minggu 1',
+                style: TextStyle(
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

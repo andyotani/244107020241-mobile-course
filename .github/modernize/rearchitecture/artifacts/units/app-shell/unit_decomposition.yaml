@@ -1,0 +1,12 @@
+unit: app-shell
+commit: false
+candidate_splits:
+  - id: "lib/main.dart:24-227"
+    drivers: [concern_split, lifecycle_split]
+    rationale: >
+      The root file combines Firebase bootstrap, route-guard construction, app composition,
+      and post-frame push callback wiring; these concerns have distinct startup lifecycles
+      even though they currently share the application root.
+    source_slice:
+      file: "lib/main.dart"
+      lines: [24, 227]

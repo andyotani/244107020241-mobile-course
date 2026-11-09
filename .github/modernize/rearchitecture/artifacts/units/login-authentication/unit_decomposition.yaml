@@ -1,0 +1,12 @@
+unit: login-authentication
+commit: false
+candidate_splits:
+  - id: "lib/pages/login_page.dart:8-169"
+    drivers: [concern_split]
+    rationale: >
+      The page owns form controllers, required-field feedback, loading presentation,
+      and navigation while the provider/repository own session orchestration and
+      credential acceptance; these are separate presentation and domain/data concerns.
+    source_slice:
+      file: "lib/pages/login_page.dart"
+      lines: [8, 169]

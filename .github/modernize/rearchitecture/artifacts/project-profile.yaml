@@ -1,0 +1,50 @@
+﻿project:
+  scope_path: "07-week-7-clean-architecture/campus_notif_clean_architecture"
+  loc: 1358
+  languages: [Dart]
+  git: true
+  structure:
+    lib: "Flutter application source"
+    test: "Flutter tests"
+    android: "Android platform project"
+    ios: "iOS platform project"
+    web: "Web platform project"
+    linux: "Linux platform project"
+    macos: "macOS platform project"
+    windows: "Windows platform project"
+  notes: "Single-module Flutter/Dart app, 14 Dart files, 1,358 non-blank Dart LOC; generated/build outputs excluded."
+assessment:
+  change_type: upgrade
+  rationale: |
+    In-place structural refactor of an existing Flutter application to Feature-First Clean Architecture; no stack/runtime change or module extraction requested. The target project is a single small Flutter module, so work is ungrouped. Existing README, conventions, dependencies, and behavior must be inspected by the workers before implementation.
+  transformations:
+    - fromStack: Flutter
+      fromStackVersion: "existing project version"
+      toStack: Flutter with Feature-First Clean Architecture
+      toStackVersion: "as requested"
+  grouping_needed: false
+  deep_planning: undecided
+progress_sync:
+  run_id: f717143a-f653-4973-8438-046898d37371
+  grouping_mode: none
+  execution_mode: all-at-once
+  plan_start_time: "2026-11-08T23:59:26Z"
+  plan_completed_time: "2026-11-09T00:20:02Z"
+  execution_start_time: "2026-11-09T00:20:20Z"
+  execution_completed_time: null
+  validation_start_time: null
+  validation_completed_time: null
+  total_phases: 5
+  completed_phases: 2
+  total_modules: 1
+  completed_modules: 0
+  total_tasks: 9
+  completed_tasks: 3
+  total_commits: 36
+  build_verified: false
+  test_verified: false
+
+
+
+
+

@@ -1,0 +1,15 @@
+unit: login-authentication
+bindings:
+  - type: route-declaration
+    name: "GoRouter /login route"
+    source_loc: "lib/main.dart:53"
+    target: "LoginPage"
+    must_appear_in_target: true
+    notes: "Unauthenticated routes are redirected here."
+  - type: di-registration
+    name: "authStateProvider and its TokenStore/AuthRepository providers"
+    source_loc: "lib/providers/auth_provider.dart:8"
+    target: "AuthNotifier"
+    must_appear_in_target: true
+    notes: "AsyncNotifier state is shared by login UI, route guard and logout action."
+runtime_config: []

@@ -1,0 +1,58 @@
+user_intent:
+  raw_request: "Refactor the campus_notif_clean_architecture Flutter project to Feature-First Clean Architecture with Presentation, Domain, and Data layers while preserving Login, Authentication, Firebase Messaging, and Notification behavior."
+  inferred_acceptance:
+    - "Current login/session, navigation, notification inbox and FCM behaviors remain observable."
+    - "Runtime Dart code for the affected app features can be reorganized into feature-first layers."
+    - "Existing UI, Flutter/Dart constraints, dependencies and platform targets remain unchanged unless source evidence requires otherwise."
+  cleanup_required: false
+strategy: phased
+runtime_reachable:
+  - lib/main.dart
+  - lib/pages/login_page.dart
+  - lib/pages/home_page.dart
+  - lib/pages/notification_page.dart
+  - lib/providers/auth_provider.dart
+  - lib/providers/notification_provider.dart
+  - lib/data/auth_repository.dart
+  - lib/data/token_store.dart
+  - lib/data/notification_store.dart
+  - lib/messaging/push_service.dart
+  - lib/firebase_options.dart
+must_rewrite:
+  - path: lib/main.dart
+    reason: "Runtime application entrypoint currently combines Firebase bootstrap, routing, and push callback wiring."
+  - path: lib/pages/login_page.dart
+    reason: "Runtime login presentation is part of the requested feature-first layer refactor."
+  - path: lib/pages/home_page.dart
+    reason: "Runtime home presentation is part of the requested feature-first layer refactor."
+  - path: lib/pages/notification_page.dart
+    reason: "Runtime notification-inbox presentation and user actions are part of the requested feature-first layer refactor."
+  - path: lib/providers/auth_provider.dart
+    reason: "Auth state and UI orchestration are runtime-reachable and need separation from domain/data."
+  - path: lib/providers/notification_provider.dart
+    reason: "Notification state and storage orchestration are runtime-reachable and need separation from domain/data."
+  - path: lib/data/auth_repository.dart
+    reason: "The login implementation/session result is runtime behavior that must be represented behind the requested contracts/use cases."
+  - path: lib/data/token_store.dart
+    reason: "Secure token persistence is runtime-reachable from login, restoration and logout."
+  - path: lib/data/notification_store.dart
+    reason: "Notification model serialization and persistence currently share this runtime file."
+  - path: lib/messaging/push_service.dart
+    reason: "The registered Firebase Messaging handlers and local-notification integration must remain reachable."
+copy_as_is:
+  - lib/firebase_options.dart
+  - pubspec.yaml
+  - pubspec.lock
+  - analysis_options.yaml
+  - "Existing platform project files and assets, unless a runtime validation proves a concrete compatibility fix is necessary."
+legacy_allowed_to_remain:
+  - lib/data/notification_repository.dart
+  - lib/models/notification_model.dart
+defer_cleanup:
+  - "Do not remove the zero-byte legacy placeholders as part of the refactor unless they are deliberately populated/replaced and imports are verified."
+  - "Do not restructure generated Firebase options or unrelated platform scaffolding."
+full_rewrite_reason: null
+implementation_rule: >
+  Limit transformation to the runtime Dart feature code named in must_rewrite.
+  Preserve generated/platform configuration and existing dependency constraints.
+  Do not treat source_anchors or the empty placeholders as a mandate to broaden scope.

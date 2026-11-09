@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "80864955580",
+    "project_id": "campus-notif-867a6",
+    "storage_bucket": "campus-notif-867a6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:80864955580:android:c27e5214f104e5acc914b9",
+        "android_client_info": {
+          "package_name": "com.example.campus_notif"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5feo9cOvfZQuU4ALzY00f-C923dtWIfY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,12 @@
+unit: notification-inbox
+commit: false
+candidate_splits:
+  - id: "lib/data/notification_store.dart:11-250"
+    drivers: [concern_split, data_ownership_split]
+    rationale: >
+      This file defines the notification record and JSON codec alongside preferences
+      access and list mutations; separating model/domain representation from persistence
+      addresses distinct data ownership and change responsibilities.
+    source_slice:
+      file: "lib/data/notification_store.dart"
+      lines: [11, 250]

@@ -1,0 +1,34 @@
+contracts:
+  - name: "Firebase Cloud Messaging inbound notification"
+    unit: push-messaging
+    type: sdk
+    stability: must_preserve
+    source_loc: "lib/messaging/push_service.dart:46"
+    contract:
+      method: "FirebaseMessaging.onMessage / onMessageOpenedApp / getInitialMessage / registered background handler"
+      path: "FCM message delivery"
+      request: "RemoteMessage; notification title/body are optional; data.route is optional; messageId and sentTime may be absent"
+      response: "Foreground notification is persisted and displayed locally when notification payload exists; background notification payload is persisted; opened messages route through onNotificationTap"
+      error: "Permission/token setup logs failures; token retrieval has a 30-second timeout; background Firebase initialization errors can fail the handler"
+      auth: "Firebase Messaging SDK/platform configuration"
+    target_contract:
+      method: "Keep consuming Firebase RemoteMessage notification/title/body, data.route, messageId, and sentTime through the existing Firebase Messaging SDK hooks."
+      notes: "Preserve null-payload handling and current ID fallbacks; do not invent a server API or data-only message behavior."
+    semantic_divergence: []
+
+  - name: "Campus announcements FCM topic"
+    unit: push-messaging
+    type: sdk
+    stability: must_preserve
+    source_loc: "lib/messaging/push_service.dart:254"
+    contract:
+      method: "FirebaseMessaging.instance.subscribeToTopic"
+      path: "pengumuman-kampus"
+      request: "Firebase Messaging topic subscription"
+      response: "Client subscribes during initializePushService; a separate helper can subscribe/unsubscribe"
+      error: "Subscription errors are not locally caught by initializePushService and are handled by its caller's initialization catch"
+      auth: "Firebase Messaging SDK/platform configuration"
+    target_contract:
+      method: "Subscribe the Firebase Messaging client to topic pengumuman-kampus during push initialization."
+      notes: "Retain the exact topic string; preserve the existing separate subscribeCampusTopic/unsubscribeCampusTopic operations if retained."
+    semantic_divergence: []

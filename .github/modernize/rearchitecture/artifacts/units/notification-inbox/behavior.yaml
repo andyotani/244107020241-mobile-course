@@ -1,0 +1,47 @@
+unit: notification-inbox
+side_effects:
+  - source_loc: "lib/data/notification_store.dart:68"
+    effect: "Reads/writes the JSON notification list in SharedPreferences under campus_notifications."
+    must_preserve: true
+  - source_loc: "lib/data/notification_store.dart:150"
+    effect: "Adds a notification with current time and isRead false, unless the same id already exists; new item is inserted at index zero and persisted."
+    must_preserve: true
+  - source_loc: "lib/providers/notification_provider.dart:72"
+    effect: "Reading a notification removes it from storage and refreshes the list; it is not retained with isRead true."
+    must_preserve: true
+  - source_loc: "lib/pages/notification_page.dart:140"
+    effect: "Delete-one removes the selected id."
+    must_preserve: true
+  - source_loc: "lib/pages/notification_page.dart:24"
+    effect: "Clear-all returns immediately for an empty list; otherwise removes the entire persisted key."
+    must_preserve: true
+branches:
+  - source_loc: "lib/data/notification_store.dart:92"
+    condition: "Decoded preferences value is not a JSON list."
+    behavior: "Log invalid format and return an empty list."
+    must_preserve: true
+  - source_loc: "lib/data/notification_store.dart:104"
+    condition: "Loaded JSON list is valid."
+    behavior: "Sort notifications newest-first."
+    must_preserve: true
+  - source_loc: "lib/pages/notification_page.dart:45"
+    condition: "The list is empty."
+    behavior: "Show the empty-inbox icon and Indonesian empty-state copy."
+    must_preserve: true
+  - source_loc: "lib/pages/notification_page.dart:158"
+    condition: "After marking an item read, route is /notifications."
+    behavior: "Remain on the inbox; route / or /login navigates there; any other/null route falls back to /."
+    must_preserve: true
+error_paths:
+  - source_loc: "lib/data/notification_store.dart:113"
+    trigger: "JSON decoding, item conversion, or SharedPreferences access fails."
+    outcome: "Log error/stack and rethrow; AsyncNotifier state can surface an error to the page."
+    contract: "NotificationPage displays 'Terjadi kesalahan: <error>'."
+    must_preserve: true
+concurrency:
+  model: event-loop
+  tx_boundary:
+    source_loc: "lib/data/notification_store.dart:144"
+    scope: "Load, mutate, and save the list asynchronously; no lock or atomic transaction protects concurrent writers."
+    isolation: "not specified"
+    must_preserve: true

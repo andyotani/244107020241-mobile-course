@@ -1,0 +1,41 @@
+unit: login-authentication
+side_effects:
+  - source_loc: "lib/data/auth_repository.dart:14"
+    effect: "Demo login waits 500 ms and returns synthetic access/refresh values derived from email; it does not call Firebase Auth or a network API."
+    must_preserve: true
+  - source_loc: "lib/data/token_store.dart:13"
+    effect: "Writes access_token and refresh_token to flutter_secure_storage after successful login."
+    must_preserve: true
+  - source_loc: "lib/data/token_store.dart:32"
+    effect: "Logout deletes both persisted token keys."
+    must_preserve: true
+branches:
+  - source_loc: "lib/pages/login_page.dart:32"
+    condition: "Email or password input is empty."
+    behavior: "Show the 'Email dan password harus diisi' snackbar and do not submit."
+    must_preserve: true
+  - source_loc: "lib/data/auth_repository.dart:21"
+    condition: "Email does not contain '@' or password has fewer than six characters."
+    behavior: "Throw 'Email atau kata sandi tidak valid'; auth state becomes an error and the login page displays the error text."
+    must_preserve: true
+  - source_loc: "lib/providers/auth_provider.dart:35"
+    condition: "Access token exists during auth-state initialization."
+    behavior: "Resolve auth state as logged in; otherwise resolve false."
+    must_preserve: true
+  - source_loc: "lib/pages/login_page.dart:61"
+    condition: "Login state resolves true."
+    behavior: "Navigate to /; while the async operation is loading, disable the login button and show a progress indicator."
+    must_preserve: true
+error_paths:
+  - source_loc: "lib/providers/auth_provider.dart:54"
+    trigger: "AuthRepository.login or TokenStore.save throws."
+    outcome: "AsyncNotifier state carries the error; LoginPage shows its message after removing the 'Exception: ' prefix."
+    contract: "Do not silently treat an error as a successful login."
+    must_preserve: true
+concurrency:
+  model: event-loop
+  tx_boundary:
+    source_loc: "lib/providers/auth_provider.dart:46"
+    scope: "Async login followed by two sequential secure-storage writes; there is no atomic transaction across the token writes."
+    isolation: "not applicable"
+    must_preserve: true

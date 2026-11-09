@@ -1,0 +1,426 @@
+{
+  "schema": "clarification-questions/v1",
+  "generated_at": "2026-11-08T23:45:01.7716898Z",
+  "user_input": "Refactor the Flutter project `campus_notif_clean_architecture` in this repository to Feature-First Clean Architecture with Presentation, Domain, and Data layers; enforce practical SOLID (SRP, OCP, LSP, ISP, DIP); separate Entity, Model, Repository contracts/implementations, Use Cases, and Riverpod DI. Preserve existing Login, Authentication, Firebase Messaging, and Notification behavior. Inspect actual repo and README first, use current conventions and dependencies where possible. Make and verify complete implementation changes (not a plan), run relevant formatting/analyze/tests/build validation available. Do not disturb unrelated worktree changes. Since Dart/Flutter changes are made, arrange/execute required Flutter hot restart/reload if available via tools; report exact limits if no running app. Return concise changed files, architecture summary, and validation.",
+  "title": "Flutter Feature-First Clean Architecture Refactor",
+  "assessment_snapshot": {
+    "intro": "The supplied project facts describe a single-module Flutter/Dart mobile application with:",
+    "bullets": [
+      "1,358 non-blank Dart LOC across 14 Dart files; the application README and source are to be inspected by downstream implementation work, not by this clarification gate",
+      "Login/authentication, Firebase Messaging, and notifications named as behavior to preserve",
+      "An in-place, same-stack architecture refactor with no module grouping required"
+    ]
+  },
+  "proposed_outcome": "Refactor the existing Flutter app in place into feature-first Presentation, Domain, and Data layers, with entities/models, repository contracts and implementations, use cases, and Riverpod dependency injection; preserve login, authentication, messaging, and notification behavior and verify the result using the available Flutter validation and runtime tools.",
+  "scope": [
+    "frontend",
+    "generic"
+  ],
+  "status": "answered",
+  "questions": [
+    {
+      "id": "F1",
+      "kit": "frontend",
+      "field": "target.framework",
+      "title": "Flutter target version",
+      "question": "Should the refactor keep Flutter and the current repository's Flutter/Dart SDK versions, or target another framework/version?",
+      "importance": "required",
+      "impact": 5,
+      "recommended": "Flutter; preserve the versions currently declared by the repository",
+      "default": null,
+      "prefilled": true,
+      "prefilled_value": "Flutter; preserve the versions currently declared by the repository",
+      "answer": {
+        "value": "Flutter; preserve the versions currently declared by the repository",
+        "source": "user"
+      },
+      "depends_on": null,
+      "options": [
+        {
+          "value": "Flutter; preserve the versions currently declared by the repository",
+          "label": "Flutter; preserve repository-declared versions"
+        },
+        {
+          "value": "Other framework or explicit version",
+          "label": "Other framework or explicit version"
+        }
+      ],
+      "allow_other": true,
+      "type": "single_select"
+    },
+    {
+      "id": "F2",
+      "kit": "frontend",
+      "field": "target.component_library",
+      "title": "Widget and UI conventions",
+      "question": "Which Flutter widget/component library and visual conventions should the refactor preserve or target?",
+      "importance": "required",
+      "impact": 4,
+      "recommended": "Preserve the existing repository's widget library, theme, and UI conventions",
+      "default": null,
+      "prefilled": false,
+      "prefilled_value": null,
+      "answer": {
+        "value": null,
+        "source": "skipped"
+      },
+      "depends_on": null,
+      "options": [
+        {
+          "value": "Preserve the existing repository's widget library, theme, and UI conventions",
+          "label": "Preserve the existing widget library, theme, and UI conventions"
+        },
+        {
+          "value": "Flutter Material 3",
+          "label": "Flutter Material 3"
+        },
+        {
+          "value": "Flutter Cupertino",
+          "label": "Flutter Cupertino"
+        }
+      ],
+      "allow_other": true,
+      "type": "single_select"
+    },
+    {
+      "id": "F3",
+      "kit": "frontend",
+      "field": "visual.screenshots",
+      "title": "Login UI references",
+      "question": "Provide screenshots, screen recordings, or a staging URL for the existing Login/authentication UI, or state that no visual UI reproduction is required for this architecture-only refactor.",
+      "importance": "required",
+      "impact": 4,
+      "recommended": null,
+      "default": null,
+      "prefilled": false,
+      "prefilled_value": null,
+      "answer": {
+        "value": null,
+        "source": "skipped"
+      },
+      "depends_on": null,
+      "type": "text",
+      "options": []
+    },
+    {
+      "id": "F4",
+      "kit": "frontend",
+      "field": "visual.design_system",
+      "title": "Design system source",
+      "question": "What design system, theme, or design-token source should the implementation retain?",
+      "importance": "required",
+      "impact": 4,
+      "recommended": "Keep the existing app theme and design tokens, extracting them from the repository",
+      "default": "match existing pixel-by-pixel",
+      "prefilled": false,
+      "prefilled_value": null,
+      "answer": {
+        "value": "match existing pixel-by-pixel",
+        "source": "user"
+      },
+      "depends_on": null,
+      "options": [
+        {
+          "value": "Keep the existing app theme and design tokens, extracting them from the repository",
+          "label": "Keep the existing app theme and tokens"
+        },
+        {
+          "value": "Other design system or token source",
+          "label": "Other design system or token source"
+        }
+      ],
+      "allow_other": true,
+      "type": "single_select"
+    },
+    {
+      "id": "F5",
+      "kit": "frontend",
+      "field": "compliance.accessibility",
+      "title": "Accessibility target",
+      "question": "What accessibility standard should the UI meet?",
+      "importance": "recommended",
+      "impact": 3,
+      "recommended": "WCAG 2.1 AA",
+      "default": "WCAG 2.1 AA",
+      "prefilled": false,
+      "prefilled_value": null,
+      "answer": {
+        "value": "WCAG 2.1 AA",
+        "source": "user"
+      },
+      "depends_on": null,
+      "options": [
+        {
+          "value": "WCAG 2.1 AA",
+          "label": "WCAG 2.1 AA"
+        },
+        {
+          "value": "WCAG 2.2 AA",
+          "label": "WCAG 2.2 AA"
+        },
+        {
+          "value": "None / not required",
+          "label": "None / not required"
+        }
+      ],
+      "allow_other": true,
+      "type": "single_select"
+    },
+    {
+      "id": "F6",
+      "kit": "frontend",
+      "field": "compatibility.browsers",
+      "title": "Supported runtimes",
+      "question": "Which mobile platforms and runtime versions must the app support?",
+      "importance": "recommended",
+      "impact": 3,
+      "recommended": "Preserve the platforms and minimum versions currently declared by the repository",
+      "default": "modern evergreen (Chrome, Firefox, Safari, Edge — latest 2 major versions)",
+      "prefilled": false,
+      "prefilled_value": null,
+      "answer": {
+        "value": "modern evergreen (Chrome, Firefox, Safari, Edge — latest 2 major versions)",
+        "source": "user"
+      },
+      "depends_on": null,
+      "options": [
+        {
+          "value": "Preserve the platforms and minimum versions currently declared by the repository",
+          "label": "Preserve repository-declared platform targets"
+        },
+        {
+          "value": "Other explicit platform/runtime targets",
+          "label": "Other explicit targets"
+        }
+      ],
+      "allow_other": true,
+      "type": "single_select"
+    },
+    {
+      "id": "F7",
+      "kit": "frontend",
+      "field": "responsive.breakpoints",
+      "title": "Responsive behavior",
+      "question": "What responsive/adaptive behavior should be preserved for supported device sizes and orientations?",
+      "importance": "recommended",
+      "impact": 3,
+      "recommended": "Preserve existing layouts and breakpoints discovered in the repository",
+      "default": "mobile-first using existing breakpoints detected from codebase",
+      "prefilled": false,
+      "prefilled_value": null,
+      "answer": {
+        "value": "mobile-first using existing breakpoints detected from codebase",
+        "source": "user"
+      },
+      "depends_on": null,
+      "options": [
+        {
+          "value": "Preserve existing layouts and breakpoints discovered in the repository",
+          "label": "Preserve existing layouts and breakpoints"
+        },
+        {
+          "value": "Other responsive/adaptive strategy",
+          "label": "Other responsive/adaptive strategy"
+        }
+      ],
+      "allow_other": true,
+      "type": "single_select"
+    },
+    {
+      "id": "F8",
+      "kit": "frontend",
+      "field": "i18n.locales",
+      "title": "Localization scope",
+      "question": "Which locales are in scope for the refactor?",
+      "importance": "optional",
+      "impact": 2,
+      "recommended": "Preserve current locales and existing i18n library if present",
+      "default": "preserve current locales; keep existing i18n library if present",
+      "prefilled": false,
+      "prefilled_value": null,
+      "answer": {
+        "value": "preserve current locales; keep existing i18n library if present",
+        "source": "user"
+      },
+      "depends_on": null,
+      "options": [
+        {
+          "value": "Preserve current locales and existing i18n library if present",
+          "label": "Preserve current locales and library"
+        },
+        {
+          "value": "None",
+          "label": "None"
+        }
+      ],
+      "allow_other": true,
+      "type": "single_select"
+    },
+    {
+      "id": "F9",
+      "kit": "frontend",
+      "field": "state_mgmt.preference",
+      "title": "State management and DI",
+      "question": "Confirm the state-management/dependency-injection preference for the refactor.",
+      "importance": "optional",
+      "impact": 3,
+      "recommended": "Riverpod, preserving current repository conventions where possible",
+      "default": "preserve existing pattern if identifiable; otherwise recommend minimal (component state + server-state library)",
+      "prefilled": true,
+      "prefilled_value": "Riverpod, preserving current repository conventions where possible",
+      "answer": {
+        "value": "Riverpod, preserving current repository conventions where possible",
+        "source": "user"
+      },
+      "depends_on": null,
+      "options": [
+        {
+          "value": "Riverpod, preserving current repository conventions where possible",
+          "label": "Riverpod"
+        },
+        {
+          "value": "Preserve another existing state-management pattern",
+          "label": "Preserve another existing pattern"
+        },
+        {
+          "value": "Other",
+          "label": "Other"
+        }
+      ],
+      "allow_other": true,
+      "type": "single_select"
+    },
+    {
+      "id": "F10",
+      "kit": "frontend",
+      "field": "routing.preference",
+      "title": "Navigation and routing",
+      "question": "Which navigation/routing approach should be used while preserving existing login and notification navigation behavior?",
+      "importance": "optional",
+      "impact": 3,
+      "recommended": "Preserve the existing routing approach",
+      "default": "use the de-facto router for the chosen target framework",
+      "prefilled": false,
+      "prefilled_value": null,
+      "answer": {
+        "value": "use the de-facto router for the chosen target framework",
+        "source": "user"
+      },
+      "depends_on": null,
+      "options": [
+        {
+          "value": "Preserve the existing routing approach",
+          "label": "Preserve existing routing"
+        },
+        {
+          "value": "Flutter Navigator",
+          "label": "Flutter Navigator"
+        },
+        {
+          "value": "go_router",
+          "label": "go_router"
+        }
+      ],
+      "allow_other": true,
+      "type": "single_select"
+    },
+    {
+      "id": "G1",
+      "kit": "generic",
+      "field": "success.definition",
+      "title": "Definition of done",
+      "question": "Confirm the success criteria: preserve Login, Authentication, Firebase Messaging, and Notification behavior, complete the requested architecture refactor, and pass applicable formatting, analysis, tests/build, and available runtime validation.",
+      "importance": "required",
+      "impact": 5,
+      "recommended": null,
+      "default": "feature parity with the current system; all existing user-facing behaviors preserved",
+      "prefilled": true,
+      "prefilled_value": "Preserve Login, Authentication, Firebase Messaging, and Notification behavior; complete the architecture refactor and pass applicable formatting, analysis, tests/build, and available runtime validation.",
+      "answer": {
+        "value": "Preserve Login, Authentication, Firebase Messaging, and Notification behavior; complete the architecture refactor and pass applicable formatting, analysis, tests/build, and available runtime validation.",
+        "source": "user"
+      },
+      "depends_on": null,
+      "type": "text",
+      "options": []
+    },
+    {
+      "id": "G2",
+      "kit": "generic",
+      "field": "out_of_scope",
+      "title": "Out-of-scope boundaries",
+      "question": "Confirm excluded scope: do not disturb unrelated worktree changes. Are any additional files, features, or behaviors explicitly out of scope?",
+      "importance": "recommended",
+      "impact": 3,
+      "recommended": null,
+      "default": "no explicit exclusions; agent will infer from project structure",
+      "prefilled": true,
+      "prefilled_value": "Do not disturb unrelated worktree changes; infer other exclusions from project structure.",
+      "answer": {
+        "value": "Do not disturb unrelated worktree changes; infer other exclusions from project structure.",
+        "source": "user"
+      },
+      "depends_on": null,
+      "type": "text",
+      "options": []
+    },
+    {
+      "id": "G3",
+      "kit": "generic",
+      "field": "existing_tests.posture",
+      "title": "Existing test policy",
+      "question": "What should happen to the existing test suite during the refactor?",
+      "importance": "recommended",
+      "impact": 3,
+      "recommended": "must pass",
+      "default": "must pass",
+      "prefilled": false,
+      "prefilled_value": null,
+      "answer": {
+        "value": "must pass",
+        "source": "user"
+      },
+      "depends_on": null,
+      "options": [
+        {
+          "value": "must pass",
+          "label": "Must pass"
+        },
+        {
+          "value": "can rewrite",
+          "label": "Can rewrite with equivalent coverage"
+        },
+        {
+          "value": "ignore",
+          "label": "Ignore outdated/broken tests and write new tests"
+        },
+        {
+          "value": "partial: specify suites",
+          "label": "Partial — specify required suites"
+        }
+      ],
+      "allow_other": true,
+      "type": "single_select"
+    },
+    {
+      "id": "G5",
+      "kit": "generic",
+      "field": "constraints.additional",
+      "title": "Additional constraints",
+      "question": "Add any other requirements, exclusions, dependencies, compliance rules, or operational constraints not covered above.",
+      "importance": "optional",
+      "impact": 2,
+      "recommended": null,
+      "default": "None beyond the decisions listed in this specification.",
+      "prefilled": true,
+      "prefilled_value": "None beyond the decisions listed in this specification.",
+      "answer": {
+        "value": "None beyond the decisions listed in this specification.",
+        "source": "user"
+      },
+      "depends_on": null,
+      "type": "text",
+      "options": []
+    }
+  ]
+}

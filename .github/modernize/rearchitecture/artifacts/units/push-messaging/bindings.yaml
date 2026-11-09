@@ -1,0 +1,27 @@
+unit: push-messaging
+bindings:
+  - type: listener
+    name: "firebaseMessagingBackgroundHandler VM entrypoint registration"
+    source_loc: "lib/main.dart:106"
+    target: "firebaseMessagingBackgroundHandler"
+    must_appear_in_target: true
+    notes: "Top-level background handler is annotated @pragma('vm:entry-point'); keep it reachable and Firebase-initialized."
+  - type: listener
+    name: "FirebaseMessaging.onMessage"
+    source_loc: "lib/messaging/push_service.dart:261"
+    target: "foreground persistence/display callbacks"
+    must_appear_in_target: true
+    notes: "Persist through caller callback before displaying local notification."
+  - type: listener
+    name: "onMessageOpenedApp, getInitialMessage, local notification response"
+    source_loc: "lib/messaging/push_service.dart:270"
+    target: "notification tap callback"
+    must_appear_in_target: true
+    notes: "All entry paths pass optional data.route to the app callback."
+  - type: listener
+    name: "Android notification channel and platform notification details"
+    source_loc: "lib/messaging/push_service.dart:31"
+    target: "campus_notif_chime_v1 / campus_notification"
+    must_appear_in_target: true
+    notes: "High importance, sound, vibration; iOS notification details also request alert/badge/sound."
+runtime_config: []

@@ -1,0 +1,21 @@
+unit: home-dashboard
+side_effects:
+  - source_loc: "lib/pages/home_page.dart:35"
+    effect: "Notification toolbar and primary action navigate to /notifications."
+    must_preserve: true
+  - source_loc: "lib/pages/home_page.dart:67"
+    effect: "Logout clears secure token storage; if the widget context remains mounted, navigate to /login."
+    must_preserve: true
+branches:
+  - source_loc: "lib/pages/home_page.dart:14"
+    condition: "Notification AsyncValue has data."
+    behavior: "Display a badge only when unread count is greater than zero; loading/error states show zero."
+    must_preserve: true
+error_paths: []
+concurrency:
+  model: event-loop
+  tx_boundary:
+    source_loc: "lib/pages/home_page.dart:65"
+    scope: "Logout awaits token clearing before route navigation; no transaction exists."
+    isolation: "not applicable"
+    must_preserve: true

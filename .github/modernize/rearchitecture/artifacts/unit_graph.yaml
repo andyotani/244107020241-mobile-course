@@ -1,0 +1,117 @@
+units:
+  - name: app-shell
+    trigger: page
+    trigger_detail: "Application launch; root router and auth redirect"
+    source_anchors:
+      - path: lib/main.dart
+        line: 24
+      - path: lib/firebase_options.dart
+        line: 17
+    exported_signature: []
+    dynamic_entrypoints: []
+    depends_on:
+      - unit: login-authentication
+        via: "authStateProvider read/listen by GoRouter redirect and refresh"
+      - unit: push-messaging
+        via: "initializePushService callbacks"
+      - unit: notification-inbox
+        via: "notificationProvider.addNotification callback"
+    shared_refs:
+      - module: auth-state-provider
+        used_fields: [authStateProvider]
+      - module: notification-state-provider
+        used_fields: [notificationProvider, NotificationNotifier.addNotification]
+      - module: firebase-platform-options
+        used_fields: [DefaultFirebaseOptions.currentPlatform]
+
+  - name: login-authentication
+    trigger: page
+    trigger_detail: "Login screen at /login; session restoration and logout state actions"
+    source_anchors:
+      - path: lib/pages/login_page.dart
+        line: 8
+      - path: lib/providers/auth_provider.dart
+        line: 25
+      - path: lib/data/auth_repository.dart
+        line: 2
+      - path: lib/data/token_store.dart
+        line: 4
+    exported_signature:
+      - method: "AuthNotifier.login(String email, String password) -> Future<void>"
+        source_loc: "lib/providers/auth_provider.dart:46"
+        stability: may_change
+      - method: "AuthNotifier.logout() -> Future<void>"
+        source_loc: "lib/providers/auth_provider.dart:73"
+        stability: may_change
+    dynamic_entrypoints: []
+    depends_on: []
+    shared_refs:
+      - module: auth-state-provider
+        used_fields: [authStateProvider, AuthNotifier.build, AuthNotifier.login]
+
+  - name: home-dashboard
+    trigger: page
+    trigger_detail: "Home screen at /"
+    source_anchors:
+      - path: lib/pages/home_page.dart
+        line: 9
+    exported_signature: []
+    dynamic_entrypoints: []
+    depends_on:
+      - unit: login-authentication
+        via: "AuthNotifier.logout"
+      - unit: notification-inbox
+        via: "notificationProvider state for unread badge"
+    shared_refs:
+      - module: auth-state-provider
+        used_fields: [authStateProvider, AuthNotifier.logout]
+      - module: notification-state-provider
+        used_fields: [notificationProvider]
+
+  - name: notification-inbox
+    trigger: page
+    trigger_detail: "Notification list at /notifications; read/delete/clear actions"
+    source_anchors:
+      - path: lib/pages/notification_page.dart
+        line: 8
+      - path: lib/providers/notification_provider.dart
+        line: 14
+      - path: lib/data/notification_store.dart
+        line: 68
+    exported_signature:
+      - method: "NotificationNotifier.addNotification({id, title, body, route}) -> Future<void>"
+        source_loc: "lib/providers/notification_provider.dart:53"
+        stability: may_change
+      - method: "NotificationStore.add({id, title, body, route}) -> Future<void>"
+        source_loc: "lib/data/notification_store.dart:150"
+        stability: may_change
+    dynamic_entrypoints: []
+    depends_on: []
+    shared_refs:
+      - module: notification-state-provider
+        used_fields: [notificationProvider, NotificationNotifier.markAsRead, NotificationNotifier.deleteNotification, NotificationNotifier.clearAll]
+      - module: notification-persistence
+        used_fields: [NotificationStore.load, NotificationStore.add, NotificationStore.remove, NotificationStore.clear]
+
+  - name: push-messaging
+    trigger: handler
+    trigger_detail: "Firebase Messaging foreground/background delivery, notification-open and initial-message events"
+    source_anchors:
+      - path: lib/messaging/push_service.dart
+        line: 46
+    exported_signature:
+      - method: "initializePushService({onForegroundMessage, onNotificationTap}) -> Future<void>"
+        source_loc: "lib/messaging/push_service.dart:235"
+        stability: must_preserve
+    dynamic_entrypoints:
+      - target: "firebaseMessagingBackgroundHandler"
+        mechanism: convention
+        source_loc: "lib/main.dart:106"
+    depends_on:
+      - unit: notification-inbox
+        via: "NotificationStore.add from the background handler"
+    shared_refs:
+      - module: notification-persistence
+        used_fields: [NotificationStore.add]
+      - module: firebase-platform-options
+        used_fields: [DefaultFirebaseOptions.currentPlatform]

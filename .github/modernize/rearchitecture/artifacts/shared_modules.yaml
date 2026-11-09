@@ -1,0 +1,72 @@
+modules:
+  - name: auth-state-provider
+    kind: store
+    source_loc: "lib/providers/auth_provider.dart:25"
+    used_by_units: [app-shell, login-authentication, home-dashboard]
+    fields:
+      - name: authStateProvider
+        type: "AsyncNotifierProvider<AuthNotifier, bool>"
+      - name: AuthNotifier.build
+        type: "Future<bool>; reads access_token from TokenStore"
+      - name: AuthNotifier.login
+        type: "Future<void>; establishes session and persists access/refresh tokens"
+      - name: AuthNotifier.logout
+        type: "Future<void>; clears persisted tokens and emits false"
+    god_class: false
+    split_candidate: false
+    migration_strategy: wrap
+    notes: "A single auth state provider is consumed by the router, login screen, and home logout action."
+
+  - name: notification-state-provider
+    kind: store
+    source_loc: "lib/providers/notification_provider.dart:14"
+    used_by_units: [app-shell, home-dashboard, notification-inbox]
+    fields:
+      - name: notificationProvider
+        type: "AsyncNotifierProvider<NotificationNotifier, List<AppNotification>>"
+      - name: NotificationNotifier.addNotification
+        type: "Future<void>; persists and refreshes the list"
+      - name: NotificationNotifier.markAsRead
+        type: "Future<void>; removes the selected notification"
+      - name: NotificationNotifier.deleteNotification
+        type: "Future<void>; removes the selected notification"
+      - name: NotificationNotifier.clearAll
+        type: "Future<void>; clears persistent storage and emits an empty list"
+      - name: NotificationNotifier.unreadCount
+        type: "int; count of items whose isRead is false"
+    god_class: false
+    split_candidate: false
+    migration_strategy: wrap
+    notes: "The app shell invokes addNotification for foreground FCM; home reads unread state; the inbox handles user actions."
+
+  - name: notification-persistence
+    kind: store
+    source_loc: "lib/data/notification_store.dart:68"
+    used_by_units: [notification-inbox, push-messaging]
+    fields:
+      - name: NotificationStore.load
+        type: "Future<List<AppNotification>>"
+      - name: NotificationStore.add
+        type: "Future<void>; deduplicates by notification id"
+      - name: NotificationStore.save
+        type: "Future<void>; serializes list to SharedPreferences"
+      - name: NotificationStore.remove
+        type: "Future<void>; removes by id"
+      - name: NotificationStore.clear
+        type: "Future<void>; removes campus_notifications key"
+    god_class: false
+    split_candidate: true
+    migration_strategy: wrap
+    notes: "Used by inbox state and the background message handler. It also declares AppNotification inline, so storage and data-model responsibilities are currently coupled."
+
+  - name: firebase-platform-options
+    kind: config
+    source_loc: "lib/firebase_options.dart:17"
+    used_by_units: [app-shell, push-messaging]
+    fields:
+      - name: DefaultFirebaseOptions.currentPlatform
+        type: "FirebaseOptions; generated platform selector"
+    god_class: false
+    split_candidate: false
+    migration_strategy: copy
+    notes: "Generated FlutterFire options are read by foreground startup and background Firebase initialization."
